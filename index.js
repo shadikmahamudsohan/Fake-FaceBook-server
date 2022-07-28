@@ -55,7 +55,7 @@ async function run() {
             res.send(user);
         });
         app.put('/user/:id', async (req, res) => {
-            const user = await userCollection.updateOne({ _id: req.params.id }, { $set: req.body });
+            const user = await userCollection.updateOne({ email: req.params.id }, { $set: req.body });
             res.send(user);
         });
     } finally {
