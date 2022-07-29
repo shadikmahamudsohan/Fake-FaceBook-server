@@ -49,9 +49,8 @@ async function run() {
             res.send(users);
         });
         //get single user
-        app.get('/user/:id', async (req, res) => {
-            const user = await userCollection.findOne({ _id: ObjectId(req.params.id) });
-            console.log(user);
+        app.get('/user/:email', async (req, res) => {
+            const user = await userCollection.findOne({ email: req.params.email });
             res.send(user);
         });
         //create user
@@ -61,14 +60,22 @@ async function run() {
         });
         //delete user
         app.delete('/user/:id', async (req, res) => {
-            const user = await userCollection.deleteOne({ _id: req.params.id });
+            const user = await userCollection.deleteOne({ _id: ObjectId(req.params.id) });
             res.send(user);
         });
         //update user
-        app.put('/user/:id', async (req, res) => {
-            const user = await userCollection.updateOne({ email: req.params.id }, { $set: req.body });
+        app.put('/user/:email', async (req, res) => {
+            const user = await userCollection.updateOne({ email: req.params.email }, { $set: req.body }, { upsert: true });
             res.send(user);
         });
+
+        //make a user patch request
+        app.patch('/user/:email', async (req, res) => {
+            const user = await userCollection.updateOne({ email: req.params.email }, { $set: req.body }, { upsert: true });
+            console.log(user, req.params.email);
+            res.send(user);
+        });
+
     } finally {
         // await client.close();
     }
