@@ -21,28 +21,43 @@ async function run() {
         // all collection here
         const postCollection = client.db("Posts").collection("post");
         const userCollection = client.db("Users").collection("user");
+        const imageShareCollection = client.db("ImageShare").collection("details");
+
+
+        // ========================================================
+        // ===================    ImageShare    ========================= 
+        // ========================================================
         // post methods
-        app.get('/post', async (req, res) => {
-            const posts = await postCollection.find({}).toArray();
-            res.send(posts);
+        app.get('/imageShare', async (req, res) => {
+            const imageShares = await imageShareCollection.find({}).toArray();
+            res.send(imageShares);
         });
-        //create post
-        app.post('/post', async (req, res) => {
-            // console.log(req.body);
+        //create imageShare
+        app.post('/imageShare', async (req, res) => {
             const data = req.body;
-            const post = await postCollection.insertOne(data);
-            res.send(post);
+            const imageShare = await imageShareCollection.insertOne(data);
+            res.send(imageShare);
         });
-        //delete post
-        app.delete('/post/:id', async (req, res) => {
-            const post = await postCollection.deleteOne({ _id: req.params.id });
-            res.send(post);
+        //delete imageShare
+        app.delete('/imageShare/:id', async (req, res) => {
+            const imageShare = await imageShareCollection.deleteOne({ _id: ObjectId(req.params.id) });
+            res.send(imageShare);
         });
-        //update post
-        app.put('/post/:id', async (req, res) => {
-            const post = await postCollection.updateOne({ _id: req.params.id }, { $set: req.body });
-            res.send(post);
+        //update imageShare
+        app.put('/imageShare/:id', async (req, res) => {
+            const imageShare = await imageShareCollection.updateOne({ _id: req.params.id }, { $set: req.body });
+            res.send(imageShare);
         });
+        //patch imageShare
+        app.patch('/imageShare/:id', async (req, res) => {
+            const imageShare = await imageShareCollection.updateOne({ _id: ObjectId(req.params.id) }, { $set: req.body });
+            res.send(imageShare);
+        });
+
+        // ========================================================
+        // ===================    USER    ========================= 
+        // ========================================================
+
         // user methods
         app.get('/user', async (req, res) => {
             const users = await userCollection.find({}).toArray();
@@ -53,6 +68,7 @@ async function run() {
             const user = await userCollection.findOne({ email: req.params.email });
             res.send(user);
         });
+
         //create user
         app.post('/user', async (req, res) => {
             const user = await userCollection.insertOne(req.body);
