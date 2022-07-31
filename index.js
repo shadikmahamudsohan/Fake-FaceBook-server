@@ -22,6 +22,7 @@ async function run() {
         const postCollection = client.db("Posts").collection("post");
         const userCollection = client.db("Users").collection("user");
         const imageShareCollection = client.db("ImageShare").collection("details");
+        const videoCollection = client.db("Videos").collection("video");
 
 
         // ========================================================
@@ -90,6 +91,35 @@ async function run() {
             const user = await userCollection.updateOne({ email: req.params.email }, { $set: req.body }, { upsert: true });
             console.log(user, req.params.email);
             res.send(user);
+        });
+        // ========================================================
+        // ===================    videoCollection    ========================= 
+        // ========================================================
+        // post methods
+        app.get('/shareVideo', async (req, res) => {
+            const shareVideos = await videoCollection.find({}).toArray();
+            res.send(shareVideos);
+        });
+        //create shareVideo
+        app.post('/shareVideo', async (req, res) => {
+            const data = req.body;
+            const shareVideo = await videoCollection.insertOne(data);
+            res.send(shareVideo);
+        });
+        //delete shareVideo
+        app.delete('/shareVideo/:id', async (req, res) => {
+            const shareVideo = await videoCollection.deleteOne({ _id: ObjectId(req.params.id) });
+            res.send(shareVideo);
+        });
+        //update shareVideo
+        app.put('/shareVideo/:id', async (req, res) => {
+            const shareVideo = await videoCollection.updateOne({ _id: req.params.id }, { $set: req.body });
+            res.send(shareVideo);
+        });
+        //patch shareVideo
+        app.patch('/shareVideo/:id', async (req, res) => {
+            const shareVideo = await videoCollection.updateOne({ _id: ObjectId(req.params.id) }, { $set: req.body });
+            res.send(shareVideo);
         });
 
     } finally {
